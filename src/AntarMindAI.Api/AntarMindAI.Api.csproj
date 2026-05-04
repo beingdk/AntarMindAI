@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Data.Tables" Version="12.11.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
+  </ItemGroup>
+
+  <!--
+    Run the React frontend build before publishing.
+    This compiles the Vite + React app and outputs static files to wwwroot/ui.
+    Skipped automatically during debug builds — only runs on dotnet publish.
+  -->
+  <Target Name="PublishFrontend" BeforeTargets="PrepareForPublish">
+    <Message Text="Building React frontend..." Importance="high" />
+    <Exec Command="npm run build" WorkingDirectory="$(MSBuildProjectDirectory)/../../frontend" />
+  </Target>
+
+</Project>

@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AntarMindAI.Api/AntarMindAI.Api.csproj" />
+    <Project Path="src/AntarMindAI.Tests/AntarMindAI.Tests.csproj" />
+  </Folder>
+</Solution>
