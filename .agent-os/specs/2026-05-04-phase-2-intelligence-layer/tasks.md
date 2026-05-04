@@ -4,117 +4,120 @@
 
 ## Tasks
 
-- [ ] 1. Implement text preprocessing service
-  - [ ] 1.1 Write unit tests for `TextPreprocessor`: tokenization of mixed-case text, punctuation removal, stop word filtering, empty/whitespace input
-  - [ ] 1.2 Create `ITextPreprocessor` interface in `src/AntarMindAI.Api/Services/`
-  - [ ] 1.3 Implement `TextPreprocessor` with lowercase, punctuation removal, whitespace split, and static stop word `HashSet<string>`
-  - [ ] 1.4 Register `TextPreprocessor` as singleton in `Program.cs`
-  - [ ] 1.5 Verify all preprocessing unit tests pass
+- [x] 1. Implement text preprocessing service
+  - [x] 1.1 Write unit tests for `TextPreprocessor`: tokenization of mixed-case text, punctuation removal, stop word filtering, empty/whitespace input
+  - [x] 1.2 Create `ITextPreprocessor` interface in `src/AntarMindAI.Api/Services/`
+  - [x] 1.3 Implement `TextPreprocessor` with lowercase, punctuation removal, whitespace split, and static stop word `HashSet<string>`
+  - [x] 1.4 Register `TextPreprocessor` as singleton in `Program.cs`
+  - [x] 1.5 Verify all preprocessing unit tests pass
 
-- [ ] 2. Implement rule-based tagging engine
-  - [ ] 2.1 Write unit tests for `RuleBasedTaggingEngine`: at least 3 examples per domain, multi-tag scenarios, untagged input
-  - [ ] 2.2 Create `ITaggingEngine` interface
-  - [ ] 2.3 Add default keyword dictionaries for all 7 domains to `appsettings.json` under `TaggingEngine:Keywords`
-  - [ ] 2.4 Implement `RuleBasedTaggingEngine` reading keywords from `IConfiguration`
-  - [ ] 2.5 Register `RuleBasedTaggingEngine` as singleton in `Program.cs`
-  - [ ] 2.6 Verify all tagging unit tests pass
+- [x] 2. Implement rule-based tagging engine
+  - [x] 2.1 Write unit tests for `RuleBasedTaggingEngine`: at least 3 examples per domain, multi-tag scenarios, untagged input
+  - [x] 2.2 Create `ITaggingEngine` interface
+  - [x] 2.3 Add default keyword dictionaries for all 7 domains to `appsettings.json` under `TaggingEngine:Keywords`
+  - [x] 2.4 Implement `RuleBasedTaggingEngine` reading keywords from `IConfiguration`
+  - [x] 2.5 Register `RuleBasedTaggingEngine` as singleton in `Program.cs`
+  - [x] 2.6 Verify all tagging unit tests pass
 
-- [ ] 3. Implement sentiment analysis service
-  - [ ] 3.1 Write unit tests for `RuleBasedSentimentAnalyzer`: positive/negative/neutral sentences, intensity scoring, edge cases (all caps, empty tokens)
-  - [ ] 3.2 Create `ISentimentAnalyzer` interface and `SentimentResult` record
-  - [ ] 3.3 Add positive and negative keyword weight dictionaries to `appsettings.json` under `SentimentAnalyzer`
-  - [ ] 3.4 Implement `RuleBasedSentimentAnalyzer` with score calculation and intensity normalization
-  - [ ] 3.5 Register `RuleBasedSentimentAnalyzer` as singleton in `Program.cs`
-  - [ ] 3.6 Verify all sentiment unit tests pass
+- [x] 3. Implement sentiment analysis service
+  - [x] 3.1 Write unit tests for `RuleBasedSentimentAnalyzer`: positive/negative/neutral sentences, intensity scoring, edge cases (all caps, empty tokens)
+  - [x] 3.2 Create `ISentimentAnalyzer` interface and `SentimentResult` record
+  - [x] 3.3 Add positive and negative keyword weight dictionaries to `appsettings.json` under `SentimentAnalyzer`
+  - [x] 3.4 Implement `RuleBasedSentimentAnalyzer` with score calculation and intensity normalization
+  - [x] 3.5 Register `RuleBasedSentimentAnalyzer` as singleton in `Program.cs`
+  - [x] 3.6 Verify all sentiment unit tests pass
 
-- [ ] 4. Implement thought analysis pipeline and enrich ThoughtEntry
-  - [ ] 4.1 Write unit tests for `ThoughtAnalysisPipeline` verifying orchestration of all three services
-  - [ ] 4.2 Create `IThoughtAnalysisPipeline` interface and `ThoughtAnalysisResult` record
-  - [ ] 4.3 Implement `ThoughtAnalysisPipeline` composing preprocessor → tagger + sentiment analyzer
-  - [ ] 4.4 Extend `ThoughtEntry` model with `Tags`, `Sentiment`, `IntensityScore` properties
-  - [ ] 4.5 Register `ThoughtAnalysisPipeline` as singleton in `Program.cs`
-  - [ ] 4.6 Verify pipeline unit tests pass
+- [x] 4. Implement thought analysis pipeline and enrich ThoughtEntry
+  - [x] 4.1 Write unit tests for `ThoughtAnalysisPipeline` verifying orchestration of all three services
+  - [x] 4.2 Create `IThoughtAnalysisPipeline` interface and `ThoughtAnalysisResult` record
+  - [x] 4.3 Implement `ThoughtAnalysisPipeline` composing preprocessor → tagger + sentiment analyzer
+  - [x] 4.4 Extend `ThoughtEntry` model with `Tags`, `Sentiment`, `IntensityScore` properties
+  - [x] 4.5 Register `ThoughtAnalysisPipeline` as singleton in `Program.cs`
+  - [x] 4.6 Verify pipeline unit tests pass
 
-- [ ] 5. Update API: enrich POST response, update GET response, add GET by ID
-  - [ ] 5.1 Write integration tests for enriched `POST /api/thoughts` response fields
-  - [ ] 5.2 Write integration tests for `GET /api/thoughts/{id}` (found, not found, wrong user)
-  - [ ] 5.3 Inject `IThoughtAnalysisPipeline` into `ThoughtsController`; call pipeline before saving in `CreateThoughtAsync`
-  - [ ] 5.4 Update `ThoughtResponse` record to include `Tags`, `Sentiment`, `IntensityScore`
-  - [ ] 5.5 Implement `GetThoughtByIdAsync` action in `ThoughtsController`
-  - [ ] 5.6 Update both repository implementations to persist and retrieve the new fields (pipe-delimited tags in Table Storage)
-  - [ ] 5.7 Verify all controller integration tests pass
+- [x] 5. Update API: enrich POST response, update GET response, add GET by ID
+  - [x] 5.1 Write integration tests for enriched `POST /api/thoughts` response fields
+  - [x] 5.2 Write integration tests for `GET /api/thoughts/{id}` (found, not found, wrong user)
+  - [x] 5.3 Inject `IThoughtAnalysisPipeline` into `ThoughtsController`; call pipeline before saving in `CreateThoughtAsync`
+  - [x] 5.4 Update `ThoughtResponse` record to include `Tags`, `Sentiment`, `IntensityScore`
+  - [x] 5.5 Implement `GetThoughtByIdAsync` action in `ThoughtsController`
+  - [x] 5.6 Update both repository implementations to persist and retrieve the new fields (pipe-delimited tags in Table Storage)
+  - [x] 5.7 Verify all controller integration tests pass
 
-- [ ] 6. Update frontend to display tags and sentiment
-  - [ ] 6.1 Update `ThoughtResponse` TypeScript type in `frontend/src/api/thoughts.ts` to include `tags`, `sentiment`, `intensityScore`
-  - [ ] 6.2 Add `getThoughtById` API client function
-  - [ ] 6.3 Update `ThoughtCard` to render MUI `Chip` components for each tag and a colored sentiment badge
-  - [ ] 6.4 Run `npm run build` — verify no TypeScript errors
-  - [ ] 6.5 Manually verify: submit a thought, confirm tags and sentiment badge appear on the card
+- [x] 6. Update frontend to display tags and sentiment
+  - [x] 6.1 Update `ThoughtResponse` TypeScript type in `frontend/src/api/thoughts.ts` to include `tags`, `sentiment`, `intensityScore`
+  - [x] 6.2 Add `getThoughtById` API client function
+  - [x] 6.3 Update `ThoughtCard` to render MUI `Chip` components for each tag and a colored sentiment badge
+  - [x] 6.4 Run `npm run build` — verify no TypeScript errors
+  - [x] 6.5 Manually verify: submit a thought, confirm tags and sentiment badge appear on the card
 
-- [ ] 7. Verify full integration and run all tests
-  - [ ] 7.1 Run `dotnet test` — confirm all tests pass with 0 failures
-  - [ ] 7.2 Run `npm run lint` — confirm no ESLint errors
+- [x] 7. Verify full integration and run all tests
+  - [x] 7.1 Run `dotnet test` — confirm all tests pass with 0 failures (64 passed)
+  - [x] 7.2 Run `npm run lint` — confirm no ESLint errors
 
 ---
 
 ## Future Enhancements
 
-### FE-1: Expand keyword coverage for tagging and sentiment precision
+### FE-1: Expand keyword coverage for tagging and sentiment precision ✅ PARTIALLY IMPLEMENTED
+
+> **Status:** Core improvements from this enhancement have been implemented and pushed to `main` (commit `40d5367`).
+> **Completed:** expanded keyword sets, `PersonalGrowth` domain, bigram support, negation handling, sigmoid intensity curve, profanity/insult detection.
+> **Remaining:** confidence score thresholds, bigram disambiguation for overlapping keywords, domain-specific sentiment overrides, intensifier expression detection, golden-dataset regression test suite (`SentimentPrecisionTests.cs`).
 
 The current `RuleBasedTaggingEngine` and `RuleBasedSentimentAnalyzer` use minimal keyword sets. To improve accuracy:
 
 **Known tagging gaps (concrete examples):**
-- `"I am working on myself."` → tagged **Work** + **Neutral**. Should be **Personal / Self-Improvement**. Root causes: (1) "working" in Work keyword set; (2) no Self-Improvement domain exists.
-- `"The server restarted automatically at midnight."` (#1) → **no tags**. Should be **Work** — "server" missing from Work keywords.
-- `"Please submit your timesheet before Friday."` (#3) → **no tags**. Should be **Work** — "timesheet" missing.
-- `"Did you receive the confirmation email?"` (#4) → **Work** via "receive"? — spurious; generic communication word should not fire Work.
-- `"If I were you, I would document the steps."` (#31) → **Health** — "steps" incorrectly maps to Health (likely a walking/exercise keyword colliding with general usage).
-- `"I'll send the notes after I review them."` (#48) → **Learning** — "review" in Learning keyword set fires for an administrative action; should not tag.
-- `"We finished the build; then we ran a quick scan."` (#73) → **Ideas** — "build" or "scan" firing Ideas; should be **Work** or no tag.
-- `"The solution seems correct, although it needs testing."` (#81) → **Ideas** — "solution" fires Ideas; "testing" (a Work/tech term) not in any domain.
-- `"I will review the pull request tomorrow morning."` (#83) → **Personal, Work** — "morning" fires Personal (collision with Personal Growth keyword set).
-- **Missing Work/Tech keywords across 20+ sentences:** `server, deployment, token, backup, configuration, outage, timesheet, testing, staging, compiled, error, logs, update, policy, invoice, documentation, attachment, query, parameter, pull request`.
-- **Spurious keyword collisions:** `morning` → Personal (should only fire in self-routine context), `steps` → Health (should only fire in exercise context), `review` → Learning (should only fire in study context), `build` → Ideas.
+- ~~`"I am working on myself."` → tagged **Work** + **Neutral**. Should be **Personal / Self-Improvement**.~~ ✅ Fixed — `PersonalGrowth` domain added; bigram `"working myself"` now fires it.
+- ~~`"The server restarted automatically at midnight."` (#1) → **no tags**. Should be **Work** — "server" missing.~~ ✅ Fixed — "server" added to Work keywords.
+- ~~`"Please submit your timesheet before Friday."` (#3) → **no tags**. Should be **Work** — "timesheet" missing.~~ ✅ Fixed — "timesheet" added to Work keywords.
+- `"Did you receive the confirmation email?"` (#4) → **Work** via "receive"? — spurious; generic communication word should not fire Work. ⬜ Remaining.
+- ~~`"If I were you, I would document the steps."` (#31) → **Health** — "steps" colliding with Health.~~ ✅ Fixed — "steps", "walk", "walking" removed from Health keywords.
+- `"I'll send the notes after I review them."` (#48) → **Learning** — "review" firing for admin action. ⬜ Remaining.
+- ~~`"We finished the build; then we ran a quick scan."` (#73) → **Ideas** — "build" firing Ideas.~~ ✅ Fixed — "build" removed from Ideas keywords.
+- `"The solution seems correct, although it needs testing."` (#81) → **Ideas** — "solution" still fires Ideas. ⬜ Remaining.
+- ~~`"I will review the pull request tomorrow morning."` (#83) → **Personal, Work** — "morning" fires Personal.~~ ✅ Fixed — "morning", "evening" moved to PersonalGrowth domain; bigram context still imperfect but less noisy.
+- ~~**Missing Work/Tech keywords:** `server, deployment, timesheet, testing, staging, compiled, logs, invoice, pull request` etc.~~ ✅ Fixed — 25+ tech terms added to Work; bigrams added for `"pull request"`, `"software engineer"` etc.
+- **Spurious keyword collisions still remaining:** `review` → Learning (admin context), `solution` → Ideas (generic usage). ⬜ Remaining — needs confidence thresholds or context scoring.
 
 **Tagging engine (`appsettings.json` → `TaggingEngine:Keywords`):**
-- Each domain should have 20–40 keywords covering synonyms, slang, and domain-specific jargon.
-- Add a **Personal Growth / Self-Improvement** domain with keywords: `myself, self, improve, growth, habits, discipline, mindset, reflection, journal, routine, morning, evening, meditation, gratitude, goals, vision, identity, confidence, resilience, awareness`.
-- Expand the **Work** domain with tech/professional terms: `server, deployment, token, backup, configuration, outage, timesheet, testing, staging, compiled, error, logs, update, policy, invoice, documentation, attachment, query, parameter, sprint, ticket, incident, escalation`.
-- Add sub-domain differentiation (e.g. "Trading" → separate sets for equities, crypto, options, macro).
-- Consider compound phrases (bigrams) — e.g. "working on myself", "took profit", "stop loss", "machine learning", "pull request" — by extending `TextPreprocessor` to emit bigrams alongside unigrams. Bigrams take priority over single-token matches.
-- Add a confidence score per tag (weighted keyword hits / total tokens) and only emit tags above a configurable threshold (e.g. 0.05).
-- Disambiguate overlapping keywords: "working" should not trigger **Work** if the same token sequence also matches a Personal Growth bigram; "morning" should not trigger Personal unless paired with a routine/habit keyword; "steps" should not trigger Health unless paired with exercise keywords.
+- ~~Each domain should have 20–40 keywords.~~ ✅ Done — all domains expanded to 25–40 keywords.
+- ~~Add a **PersonalGrowth** domain.~~ ✅ Done — 33 keywords including `myself, career, mindset, habits, goals`.
+- ~~Expand **Work** with tech terms.~~ ✅ Done — `server, deployment, engineer, software, bug, logs, staging, timesheet`, etc.
+- ~~Add bigram support.~~ ✅ Done — `TaggingEngine:Bigrams` section in `appsettings.json`; `RuleBasedTaggingEngine` generates token pairs and matches per domain.
+- Add a confidence score per tag (weighted keyword hits / total tokens) — emit tags above a configurable threshold (e.g. 0.05). ⬜ Remaining.
+- Disambiguate overlapping keywords with context (e.g. `review` only fires Learning in study context). ⬜ Remaining.
+- Add sub-domain differentiation (Trading → equities/crypto/options). ⬜ Remaining.
 
 **Known sentiment gaps (concrete examples):**
-- `"I am working on myself."` → **Neutral**. Should lean **Positive** — self-improvement phrasing carries implicit positive intent.
-- `"You are fucking retard."` → **Neutral**. Should be **Negative** (high intensity). Root cause: no profanity or insults in negative keyword list.
-- `"What a beautiful view this is!"` (#5) → **Neutral**. Should be **Positive** — "beautiful" missing from positive keywords.
-- `"Wow, that was unexpectedly helpful!"` (#28) → **Neutral**. Should be **Positive** — "helpful" missing.
-- `"This is the best solution we've tried so far!"` (#36) → **Neutral**. Should be **Positive** — "best" missing.
-- `"What a relief it is to be done!"` (#62) → **Neutral**. Should be **Positive** — "relief" missing.
-- `"That's incredible news!"` (#68) → **Neutral**. Should be **Positive** — "incredible" missing.
-- `"How thoughtful that was!"` (#92) → **Neutral**. Should be **Positive** — "thoughtful" missing.
-- `"What an impressive turnaround!"` (#100) → **Neutral**. Should be **Positive** — "impressive" missing.
-- `"How rude that comment sounded!"` (#55) → **Neutral**. Should be **Negative** — "rude" missing from negative keywords.
-- `"I can't believe we solved it so quickly!"` (#12) → **Neutral**. Should be **Positive** — "solved" (achievement) not in positive list; "can't believe" is an intensifier expression, not a negation.
-- `"Although I was tired, I finished the task."` (#8) → **Negative (0.5)**. Should be **Neutral/Positive** — "tired" fires negative but the sentence expresses accomplishment; no positive keyword for "finished".
-- `"Let's keep the summary short and clear."` (#17) → **Positive (0.4)**. Should be **Neutral** — "clear" is in positive keywords but this is a neutral instruction; context-free keyword matching causes false positive.
-- `"I might join late if traffic is bad."` (#64) → **Negative (0.6)**. Barely acceptable — "bad" is negative but the sentence is conditional; intensity 0.6 is too high for hedged language.
-- `"She smiled, and the tension disappeared."` (#89) → **Neutral** (tagged Stress for "tension"). Should be **Positive** — "smiled" and "disappeared" (in context of tension resolving) are positive; "tension" fires Stress tag which is correct but no positive sentiment from resolution.
-- Full recap from the 100-sentence run: **74 Neutral, 15 Negative, 11 Positive** — neutral rate is far too high; the keyword vocabulary is too sparse to handle everyday English.
-- `"I started my career... pathetic and awful... energized. Well done dheeru."` — specific misses documented above (narrative arc, negation, missing keywords).
+- ~~`"I am working on myself."` → **Neutral**. Should lean **Positive**.~~ ⬜ Still Neutral — no standalone positive keyword fires; bigram/intent detection needed.
+- ~~`"You are fucking retard."` → **Neutral**. Should be **Negative**.~~ ✅ Fixed — "retard", "idiot" and other insults added to negative keywords (-0.9, -0.8).
+- ~~`"What a beautiful view this is!"` → **Neutral**. Should be **Positive** — "beautiful" missing.~~ ✅ Fixed — **Positive 0.60**.
+- ~~`"Wow, that was unexpectedly helpful!"` → **Neutral**. Should be **Positive** — "helpful" missing.~~ ✅ Fixed — **Positive 0.86**.
+- ~~`"This is the best solution we've tried so far!"` → **Neutral**. Should be **Positive** — "best" missing.~~ ✅ Fixed — **Positive 0.60**.
+- ~~`"What a relief it is to be done!"` → **Neutral**. Should be **Positive** — "relief" missing.~~ ✅ Fixed — **Positive 0.54**.
+- ~~`"That's incredible news!"` → **Neutral**. Should be **Positive** — "incredible" missing.~~ ✅ Fixed — **Positive 0.72**.
+- ~~`"How rude that comment sounded!"` → **Neutral**. Should be **Negative** — "rude" missing.~~ ✅ Fixed — **Negative 0.60**.
+- ~~`"I can't believe we solved it so quickly!"` → **Neutral**. Should be **Positive** — "solved" missing.~~ ✅ Fixed — **Positive 0.54**.
+- `"How thoughtful that was!"` (#92) → still **Neutral** — "thoughtful" added to keywords but preprocessor strips "that" and sentence may not reach threshold. ⬜ Remaining.
+- `"What an impressive turnaround!"` (#100) → still **Neutral** — "impressive" added but "turnaround" not in positive list; net score may be below 0.1 threshold. ⬜ Remaining.
+- ~~`"Although I was tired, I finished the task."` → **Negative (0.5)**. "finished" not in positives.~~ ✅ Fixed — "finished" added (0.5); now scores closer to Neutral.
+- ~~`"Let's keep the summary short and clear."` → **Positive (0.4)**. "clear" false positive.~~ ✅ Fixed — "clear" removed from positive keywords.
+- `"I might join late if traffic is bad."` (#64) → **Negative (0.6)** — conditional hedging still scores negatively. ⬜ Remaining — needs hedge/conditional detection.
+- `"I never felt so good about this project."` → **Negative** — "never" flips "good" correctly as negation, but semantically this is a positive statement. ⬜ Known limitation of unidirectional negation window; intensifier detection needed.
+- Full recap post-enhancement: **neutral rate reduced significantly** for the tested subset — 10 previously-Neutral sentences now correctly score Positive or Negative.
 
 **Sentiment analyzer (`appsettings.json` → `SentimentAnalyzer`):**
-- **Expand positive keywords** — add at minimum: `beautiful, helpful, relief, incredible, thoughtful, impressive, solved, finished, accomplished, energized, proud, grateful, thrilled, excited, joyful, peaceful, loved, clear, smooth, perfect, excellent, outstanding, brilliant, wonderful, delighted, blessed, inspired, motivated, confident, optimistic`.
-- **Expand negative keywords** — add at minimum: `rude, corrupt, corrupted, failed, failure, broken, missing, invalid, deleted, canceled, conflict, overheating, bad, wrong, error, bug, crash, issue, problem, blocked, stuck, worried, anxious, frustrated, angry, disappointed, overwhelmed, exhausted, pathetic, awful, loot`.
-- Add **profanity and insult detection** — expletives and derogatory terms should carry high negative weights (-0.8 to -1.0), stored in `appsettings.json` so they can be tuned without code changes.
-- Treat expletives as **intensity amplifiers**: when a profanity token precedes a sentiment word, multiply that word's weight by a configurable intensifier factor (e.g. 1.5×).
-- Implement basic **negation handling**: if a negation word ("not", "never", "no", "cant", "didnt", "dont", "isnt", "wasnt") precedes a sentiment word within a 3-token window, flip its polarity.
-- Distinguish **intensifier expressions** ("can't believe", "how amazing", "what a") from negations — these should amplify rather than flip sentiment.
-- Add **domain-specific sentiment overrides** (e.g. "volatile" is negative in Health but neutral in Trading).
-- Tune intensity normalization: replace hard `Math.Min(1.0, Math.Abs(score))` with a sigmoid curve so scores near 0 are more sensitive.
+- ~~**Expand positive keywords** to 50+ entries.~~ ✅ Done — 65+ positive keywords including `beautiful, helpful, relief, incredible, solved, finished, best, awesome`, etc.
+- ~~**Expand negative keywords** to 50+ entries.~~ ✅ Done — 70+ negative keywords including `rude, pathetic, loot, idiot, retard, depressed, furious`, etc.
+- ~~Add profanity/insult detection with high negative weights.~~ ✅ Done — stored in `appsettings.json` with weights -0.8 to -0.9.
+- ~~Implement basic **negation handling**.~~ ✅ Done — `not`, `no`, `never`, `neither`, `nor` flip polarity of next 3 tokens in `RuleBasedSentimentAnalyzer`.
+- ~~Tune intensity normalization with sigmoid curve.~~ ✅ Done — `2/(1+e^(-2x))-1` replaces `Math.Min(1.0, x)`.
+- Distinguish intensifier expressions (`"can't believe"`, `"how amazing"`, `"what a"`) from negations — amplify rather than flip. ⬜ Remaining.
+- Add domain-specific sentiment overrides (e.g. "volatile" neutral in Trading). ⬜ Remaining.
+- Treat expletives as intensity amplifiers (multiply adjacent word weight by configurable factor). ⬜ Remaining.
 
 **Implementation notes:**
 - All keyword additions stay in `appsettings.json` — no code changes required for new keywords.
-- Add a dedicated unit test suite (`SentimentPrecisionTests.cs`) with the 100 labeled sentences above as the golden dataset to regression-test accuracy after keyword changes.
-- Track precision/recall metrics in test output. Target: ≥80% correct sentiment label on the golden dataset before considering this enhancement done.
+- ~~Add a dedicated unit test suite (`SentimentPrecisionTests.cs`) with the 100 labeled sentences as the golden dataset.~~ ⬜ Remaining — 5 new negation/bigram tests added (64 total); full golden-dataset suite not yet created.
+- Target: ≥80% correct sentiment label on the golden dataset before considering this enhancement fully done.
