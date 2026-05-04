@@ -1,7 +1,8 @@
-// Modified by AI on 05/04/2026. Edit #1.
+// Modified by AI on 05/04/2026. Edit #3.
 using AntarMindAI.Api.Models;
 using AntarMindAI.Api.Repositories;
 using AntarMindAI.Api.Services;
+using AntarMindAI.Api.Services.Embeddings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,15 +16,18 @@ public class ThoughtsController : ControllerBase
     private readonly IThoughtRepository _repository;
     private readonly ICurrentUserService _currentUser;
     private readonly IThoughtAnalysisPipeline _pipeline;
+    private readonly IEmbeddingService _embeddingService;
 
     public ThoughtsController(
         IThoughtRepository repository,
         ICurrentUserService currentUser,
-        IThoughtAnalysisPipeline pipeline)
+        IThoughtAnalysisPipeline pipeline,
+        IEmbeddingService embeddingService)
     {
         _repository = repository;
         _currentUser = currentUser;
         _pipeline = pipeline;
+        _embeddingService = embeddingService;
     }
 
     [HttpPost]
@@ -104,7 +108,11 @@ public class ThoughtsController : ControllerBase
             });
         }
 
-        return Ok(MapToResponse(thought));
+        var similar = await _embeddingService.FindSimilarAsync(userId, id);
+
+        return Ok(new ThoughtDetailResponse(
+            thought.Id, thought.Text, thought.CreatedAt, thought.Tags,
+            thought.Sentiment, thought.IntensityScore, similar));
     }
 
     [HttpDelete("{id}")]
@@ -127,6 +135,39 @@ public class ThoughtsController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchThoughtsAsync(
+        [FromQuery] string? q,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20)
+    {
+        Response.Headers.CacheControl = "no-store";
+
+        if (string.IsNullOrWhiteSpace(q))
+        {
+            return BadRequest(new
+            {
+                correlationId = HttpContext.TraceIdentifier,
+                status = 400,
+                title = "Missing query parameter",
+                detail = "The 'q' query parameter is required.",
+                source = "q"
+            });
+        }
+
+        if (page < 1) page = 1;
+        if (pageSize < 1 || pageSize > 100) pageSize = 20;
+
+        var userId = _currentUser.GetUserId() ?? "anonymous";
+        var (items, total) = await _repository.SearchAsync(userId, q, page, pageSize);
+
+        return Ok(new PagedThoughtsResponse(
+            Items: items.Select(MapToResponse).ToList(),
+            TotalCount: total,
+            Page: page,
+            PageSize: pageSize));
     }
 
     private static ThoughtResponse MapToResponse(ThoughtEntry e) =>

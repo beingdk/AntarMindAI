@@ -1,4 +1,4 @@
-// Modified by AI on 05/04/2026. Edit #2.
+// Modified by AI on 05/04/2026. Edit #3.
 using Azure;
 using Azure.Data.Tables;
 using AntarMindAI.Api.Models;
@@ -116,6 +116,20 @@ public class AzureTableStorageThoughtRepository : IThoughtRepository
         }
 
         return false;
+    }
+
+    public async Task<(IReadOnlyList<ThoughtEntry> Items, int TotalCount)> SearchAsync(
+        string userId, string query, int page, int pageSize)
+    {
+        var all = await GetAllByUserAsync(userId);
+        var matches = all
+            .Where(e => e.Text.Contains(query, StringComparison.OrdinalIgnoreCase)
+                     || e.Tags.Any(t => t.Contains(query, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        var total = matches.Count;
+        var items = matches.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        return ((IReadOnlyList<ThoughtEntry>)items, total);
     }
 
     private static ThoughtEntry MapToEntry(TableEntity entity, string userId)

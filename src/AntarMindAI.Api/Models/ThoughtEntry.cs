@@ -1,4 +1,4 @@
-// Modified by AI on 05/04/2026. Edit #1.
+// Modified by AI on 05/04/2026. Edit #2.
 namespace AntarMindAI.Api.Models;
 
 public class ThoughtEntry
@@ -10,4 +10,5 @@ public class ThoughtEntry
     public IReadOnlyList<string> Tags { get; set; } = [];
     public string Sentiment { get; set; } = "Neutral";
     public double IntensityScore { get; set; } = 0.0;
+    public float[]? Embedding { get; set; }
 }

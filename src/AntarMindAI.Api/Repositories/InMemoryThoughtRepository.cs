@@ -1,4 +1,4 @@
-// Modified by AI on 05/04/2026. Edit #2.
+// Modified by AI on 05/04/2026. Edit #3.
 using System.Collections.Concurrent;
 using AntarMindAI.Api.Models;
 
@@ -75,6 +75,27 @@ public class InMemoryThoughtRepository : IThoughtRepository
 
             list.Remove(entry);
             return Task.FromResult(true);
+        }
+    }
+
+    public Task<(IReadOnlyList<ThoughtEntry> Items, int TotalCount)> SearchAsync(
+        string userId, string query, int page, int pageSize)
+    {
+        lock (_lock)
+        {
+            if (!_store.TryGetValue(userId, out var list))
+                return Task.FromResult<(IReadOnlyList<ThoughtEntry>, int)>(([], 0));
+
+            var q = query.ToLowerInvariant();
+            var matches = list
+                .Where(e => e.Text.Contains(q, StringComparison.OrdinalIgnoreCase)
+                         || e.Tags.Any(t => t.Contains(q, StringComparison.OrdinalIgnoreCase)))
+                .OrderByDescending(e => e.CreatedAt)
+                .ToList();
+
+            var total = matches.Count;
+            var items = matches.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            return Task.FromResult<(IReadOnlyList<ThoughtEntry>, int)>((items, total));
         }
     }
 }

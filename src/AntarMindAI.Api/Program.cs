@@ -1,7 +1,8 @@
-// Modified by AI on 05/04/2026. Edit #4.
+// Modified by AI on 05/04/2026. Edit #5.
 using AntarMindAI.Api.Auth;
 using AntarMindAI.Api.Repositories;
 using AntarMindAI.Api.Services;
+using AntarMindAI.Api.Services.Embeddings;
 using AntarMindAI.Api.Services.Insights;
 using AntarMindAI.Api.Services.Reflections;
 using Microsoft.AspNetCore.Authentication;
@@ -53,6 +54,8 @@ builder.Services.AddSingleton<IFrequencyAnalyzer, FrequencyAnalyzer>();
 builder.Services.AddSingleton<ITimeTrendAnalyzer, TimeTrendAnalyzer>();
 builder.Services.AddSingleton<IRepetitionDetector, RepetitionDetector>();
 builder.Services.AddSingleton<ITriggerIdentifier, TriggerIdentifier>();
+builder.Services.AddSingleton<ICognitiveBiasDetector, CognitiveBiasDetector>();
+builder.Services.AddSingleton<ICrossCorrelationAnalyzer, CrossCorrelationAnalyzer>();
 builder.Services.AddScoped<IInsightService, InsightService>();
 
 // Register AI summary service — real OpenAI impl if enabled, otherwise no-op
@@ -68,7 +71,25 @@ else
 }
 
 // Register weekly reflection service
+builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddScoped<IWeeklyReflectionService, WeeklyReflectionService>();
+
+// Register embedding service — real Azure OpenAI if enabled, else no-op
+var embeddingsEnabled = builder.Configuration.GetValue<bool>("AI:EmbeddingsEnabled");
+var embeddingsApiKey = builder.Configuration["AI:EmbeddingsApiKey"] ?? string.Empty;
+var embeddingsDeploymentUrl = builder.Configuration["AI:EmbeddingsDeploymentUrl"] ?? string.Empty;
+if (embeddingsEnabled && !string.IsNullOrWhiteSpace(embeddingsApiKey) && !string.IsNullOrWhiteSpace(embeddingsDeploymentUrl))
+{
+    builder.Services.AddSingleton<IEmbeddingService>(sp =>
+    {
+        var repo = sp.GetRequiredService<IThoughtRepository>();
+        return new AzureOpenAiEmbeddingService(repo, embeddingsApiKey, embeddingsDeploymentUrl);
+    });
+}
+else
+{
+    builder.Services.AddSingleton<IEmbeddingService, NullEmbeddingService>();
+}
 
 var app = builder.Build();
 

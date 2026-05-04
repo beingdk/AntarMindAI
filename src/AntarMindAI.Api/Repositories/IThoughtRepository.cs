@@ -1,4 +1,4 @@
-// Modified by AI on 05/04/2026. Edit #2.
+// Modified by AI on 05/04/2026. Edit #3.
 using AntarMindAI.Api.Models;
 
 namespace AntarMindAI.Api.Repositories;
@@ -13,4 +13,6 @@ public interface IThoughtRepository
     Task<ThoughtEntry?> GetByIdAsync(string id, string userId);
     /// <summary>Deletes a thought by id. Returns false if not found or not owned by userId.</summary>
     Task<bool> DeleteAsync(string id, string userId);
+    /// <summary>Case-insensitive search across Text and Tags.</summary>
+    Task<(IReadOnlyList<ThoughtEntry> Items, int TotalCount)> SearchAsync(string userId, string query, int page, int pageSize);
 }
