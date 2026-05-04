@@ -1,4 +1,4 @@
-// Modified by AI on 05/04/2026. Edit #1.
+// Modified by AI on 05/04/2026. Edit #2.
 using AntarMindAI.Api.Auth;
 using AntarMindAI.Api.Repositories;
 using AntarMindAI.Api.Services;
@@ -39,6 +39,12 @@ else
 {
     builder.Services.AddSingleton<IThoughtRepository, InMemoryThoughtRepository>();
 }
+
+// Register intelligence pipeline services
+builder.Services.AddSingleton<ITextPreprocessor, TextPreprocessor>();
+builder.Services.AddSingleton<ITaggingEngine, RuleBasedTaggingEngine>();
+builder.Services.AddSingleton<ISentimentAnalyzer, RuleBasedSentimentAnalyzer>();
+builder.Services.AddSingleton<IThoughtAnalysisPipeline, ThoughtAnalysisPipeline>();
 
 var app = builder.Build();
 

@@ -54,3 +54,67 @@
 - [ ] 7. Verify full integration and run all tests
   - [ ] 7.1 Run `dotnet test` — confirm all tests pass with 0 failures
   - [ ] 7.2 Run `npm run lint` — confirm no ESLint errors
+
+---
+
+## Future Enhancements
+
+### FE-1: Expand keyword coverage for tagging and sentiment precision
+
+The current `RuleBasedTaggingEngine` and `RuleBasedSentimentAnalyzer` use minimal keyword sets. To improve accuracy:
+
+**Known tagging gaps (concrete examples):**
+- `"I am working on myself."` → tagged **Work** + **Neutral**. Should be **Personal / Self-Improvement**. Root causes: (1) "working" in Work keyword set; (2) no Self-Improvement domain exists.
+- `"The server restarted automatically at midnight."` (#1) → **no tags**. Should be **Work** — "server" missing from Work keywords.
+- `"Please submit your timesheet before Friday."` (#3) → **no tags**. Should be **Work** — "timesheet" missing.
+- `"Did you receive the confirmation email?"` (#4) → **Work** via "receive"? — spurious; generic communication word should not fire Work.
+- `"If I were you, I would document the steps."` (#31) → **Health** — "steps" incorrectly maps to Health (likely a walking/exercise keyword colliding with general usage).
+- `"I'll send the notes after I review them."` (#48) → **Learning** — "review" in Learning keyword set fires for an administrative action; should not tag.
+- `"We finished the build; then we ran a quick scan."` (#73) → **Ideas** — "build" or "scan" firing Ideas; should be **Work** or no tag.
+- `"The solution seems correct, although it needs testing."` (#81) → **Ideas** — "solution" fires Ideas; "testing" (a Work/tech term) not in any domain.
+- `"I will review the pull request tomorrow morning."` (#83) → **Personal, Work** — "morning" fires Personal (collision with Personal Growth keyword set).
+- **Missing Work/Tech keywords across 20+ sentences:** `server, deployment, token, backup, configuration, outage, timesheet, testing, staging, compiled, error, logs, update, policy, invoice, documentation, attachment, query, parameter, pull request`.
+- **Spurious keyword collisions:** `morning` → Personal (should only fire in self-routine context), `steps` → Health (should only fire in exercise context), `review` → Learning (should only fire in study context), `build` → Ideas.
+
+**Tagging engine (`appsettings.json` → `TaggingEngine:Keywords`):**
+- Each domain should have 20–40 keywords covering synonyms, slang, and domain-specific jargon.
+- Add a **Personal Growth / Self-Improvement** domain with keywords: `myself, self, improve, growth, habits, discipline, mindset, reflection, journal, routine, morning, evening, meditation, gratitude, goals, vision, identity, confidence, resilience, awareness`.
+- Expand the **Work** domain with tech/professional terms: `server, deployment, token, backup, configuration, outage, timesheet, testing, staging, compiled, error, logs, update, policy, invoice, documentation, attachment, query, parameter, sprint, ticket, incident, escalation`.
+- Add sub-domain differentiation (e.g. "Trading" → separate sets for equities, crypto, options, macro).
+- Consider compound phrases (bigrams) — e.g. "working on myself", "took profit", "stop loss", "machine learning", "pull request" — by extending `TextPreprocessor` to emit bigrams alongside unigrams. Bigrams take priority over single-token matches.
+- Add a confidence score per tag (weighted keyword hits / total tokens) and only emit tags above a configurable threshold (e.g. 0.05).
+- Disambiguate overlapping keywords: "working" should not trigger **Work** if the same token sequence also matches a Personal Growth bigram; "morning" should not trigger Personal unless paired with a routine/habit keyword; "steps" should not trigger Health unless paired with exercise keywords.
+
+**Known sentiment gaps (concrete examples):**
+- `"I am working on myself."` → **Neutral**. Should lean **Positive** — self-improvement phrasing carries implicit positive intent.
+- `"You are fucking retard."` → **Neutral**. Should be **Negative** (high intensity). Root cause: no profanity or insults in negative keyword list.
+- `"What a beautiful view this is!"` (#5) → **Neutral**. Should be **Positive** — "beautiful" missing from positive keywords.
+- `"Wow, that was unexpectedly helpful!"` (#28) → **Neutral**. Should be **Positive** — "helpful" missing.
+- `"This is the best solution we've tried so far!"` (#36) → **Neutral**. Should be **Positive** — "best" missing.
+- `"What a relief it is to be done!"` (#62) → **Neutral**. Should be **Positive** — "relief" missing.
+- `"That's incredible news!"` (#68) → **Neutral**. Should be **Positive** — "incredible" missing.
+- `"How thoughtful that was!"` (#92) → **Neutral**. Should be **Positive** — "thoughtful" missing.
+- `"What an impressive turnaround!"` (#100) → **Neutral**. Should be **Positive** — "impressive" missing.
+- `"How rude that comment sounded!"` (#55) → **Neutral**. Should be **Negative** — "rude" missing from negative keywords.
+- `"I can't believe we solved it so quickly!"` (#12) → **Neutral**. Should be **Positive** — "solved" (achievement) not in positive list; "can't believe" is an intensifier expression, not a negation.
+- `"Although I was tired, I finished the task."` (#8) → **Negative (0.5)**. Should be **Neutral/Positive** — "tired" fires negative but the sentence expresses accomplishment; no positive keyword for "finished".
+- `"Let's keep the summary short and clear."` (#17) → **Positive (0.4)**. Should be **Neutral** — "clear" is in positive keywords but this is a neutral instruction; context-free keyword matching causes false positive.
+- `"I might join late if traffic is bad."` (#64) → **Negative (0.6)**. Barely acceptable — "bad" is negative but the sentence is conditional; intensity 0.6 is too high for hedged language.
+- `"She smiled, and the tension disappeared."` (#89) → **Neutral** (tagged Stress for "tension"). Should be **Positive** — "smiled" and "disappeared" (in context of tension resolving) are positive; "tension" fires Stress tag which is correct but no positive sentiment from resolution.
+- Full recap from the 100-sentence run: **74 Neutral, 15 Negative, 11 Positive** — neutral rate is far too high; the keyword vocabulary is too sparse to handle everyday English.
+- `"I started my career... pathetic and awful... energized. Well done dheeru."` — specific misses documented above (narrative arc, negation, missing keywords).
+
+**Sentiment analyzer (`appsettings.json` → `SentimentAnalyzer`):**
+- **Expand positive keywords** — add at minimum: `beautiful, helpful, relief, incredible, thoughtful, impressive, solved, finished, accomplished, energized, proud, grateful, thrilled, excited, joyful, peaceful, loved, clear, smooth, perfect, excellent, outstanding, brilliant, wonderful, delighted, blessed, inspired, motivated, confident, optimistic`.
+- **Expand negative keywords** — add at minimum: `rude, corrupt, corrupted, failed, failure, broken, missing, invalid, deleted, canceled, conflict, overheating, bad, wrong, error, bug, crash, issue, problem, blocked, stuck, worried, anxious, frustrated, angry, disappointed, overwhelmed, exhausted, pathetic, awful, loot`.
+- Add **profanity and insult detection** — expletives and derogatory terms should carry high negative weights (-0.8 to -1.0), stored in `appsettings.json` so they can be tuned without code changes.
+- Treat expletives as **intensity amplifiers**: when a profanity token precedes a sentiment word, multiply that word's weight by a configurable intensifier factor (e.g. 1.5×).
+- Implement basic **negation handling**: if a negation word ("not", "never", "no", "cant", "didnt", "dont", "isnt", "wasnt") precedes a sentiment word within a 3-token window, flip its polarity.
+- Distinguish **intensifier expressions** ("can't believe", "how amazing", "what a") from negations — these should amplify rather than flip sentiment.
+- Add **domain-specific sentiment overrides** (e.g. "volatile" is negative in Health but neutral in Trading).
+- Tune intensity normalization: replace hard `Math.Min(1.0, Math.Abs(score))` with a sigmoid curve so scores near 0 are more sensitive.
+
+**Implementation notes:**
+- All keyword additions stay in `appsettings.json` — no code changes required for new keywords.
+- Add a dedicated unit test suite (`SentimentPrecisionTests.cs`) with the 100 labeled sentences above as the golden dataset to regression-test accuracy after keyword changes.
+- Track precision/recall metrics in test output. Target: ≥80% correct sentiment label on the golden dataset before considering this enhancement done.
