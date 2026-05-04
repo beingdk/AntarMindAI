@@ -1,8 +1,9 @@
-// Modified by AI on 05/04/2026. Edit #3.
+// Modified by AI on 05/04/2026. Edit #4.
 using AntarMindAI.Api.Auth;
 using AntarMindAI.Api.Repositories;
 using AntarMindAI.Api.Services;
 using AntarMindAI.Api.Services.Insights;
+using AntarMindAI.Api.Services.Reflections;
 using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,6 +54,21 @@ builder.Services.AddSingleton<ITimeTrendAnalyzer, TimeTrendAnalyzer>();
 builder.Services.AddSingleton<IRepetitionDetector, RepetitionDetector>();
 builder.Services.AddSingleton<ITriggerIdentifier, TriggerIdentifier>();
 builder.Services.AddScoped<IInsightService, InsightService>();
+
+// Register AI summary service — real OpenAI impl if enabled, otherwise no-op
+var aiEnabled = builder.Configuration.GetValue<bool>("AI:WeeklySummaryEnabled");
+var aiApiKey = builder.Configuration["AI:ApiKey"] ?? string.Empty;
+if (aiEnabled && !string.IsNullOrWhiteSpace(aiApiKey))
+{
+    builder.Services.AddSingleton<IAiSummaryService>(_ => new OpenAiSummaryService(aiApiKey));
+}
+else
+{
+    builder.Services.AddSingleton<IAiSummaryService, NullAiSummaryService>();
+}
+
+// Register weekly reflection service
+builder.Services.AddScoped<IWeeklyReflectionService, WeeklyReflectionService>();
 
 var app = builder.Build();
 

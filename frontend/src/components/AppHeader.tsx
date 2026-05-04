@@ -1,4 +1,4 @@
-// Modified by AI on 05/04/2026. Edit #2.
+// Modified by AI on 05/04/2026. Edit #4.
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,7 +11,12 @@ export function AppHeader() {
   return (
     <AppBar position="sticky">
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h6"
+          component={Link}
+          to="/dashboard"
+          sx={{ flexGrow: 1, color: 'inherit', textDecoration: 'none' }}
+        >
           AntarMindAI
         </Typography>
         <Button
@@ -29,6 +34,14 @@ export function AppHeader() {
           sx={{ fontWeight: pathname === '/insights' ? 'bold' : 'normal' }}
         >
           Insights
+        </Button>
+        <Button
+          color="inherit"
+          component={Link}
+          to="/dashboard"
+          sx={{ fontWeight: pathname === '/dashboard' ? 'bold' : 'normal' }}
+        >
+          Dashboard
         </Button>
       </Toolbar>
     </AppBar>
