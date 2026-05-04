@@ -1,7 +1,8 @@
-// Modified by AI on 05/04/2026. Edit #2.
+// Modified by AI on 05/04/2026. Edit #3.
 using AntarMindAI.Api.Auth;
 using AntarMindAI.Api.Repositories;
 using AntarMindAI.Api.Services;
+using AntarMindAI.Api.Services.Insights;
 using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +46,13 @@ builder.Services.AddSingleton<ITextPreprocessor, TextPreprocessor>();
 builder.Services.AddSingleton<ITaggingEngine, RuleBasedTaggingEngine>();
 builder.Services.AddSingleton<ISentimentAnalyzer, RuleBasedSentimentAnalyzer>();
 builder.Services.AddSingleton<IThoughtAnalysisPipeline, ThoughtAnalysisPipeline>();
+
+// Register insights engine analyzers and service
+builder.Services.AddSingleton<IFrequencyAnalyzer, FrequencyAnalyzer>();
+builder.Services.AddSingleton<ITimeTrendAnalyzer, TimeTrendAnalyzer>();
+builder.Services.AddSingleton<IRepetitionDetector, RepetitionDetector>();
+builder.Services.AddSingleton<ITriggerIdentifier, TriggerIdentifier>();
+builder.Services.AddScoped<IInsightService, InsightService>();
 
 var app = builder.Build();
 

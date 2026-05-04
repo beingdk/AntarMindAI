@@ -1,4 +1,4 @@
-// Modified by AI on 05/04/2026. Edit #1.
+// Modified by AI on 05/04/2026. Edit #2.
 using Azure;
 using Azure.Data.Tables;
 using AntarMindAI.Api.Models;
@@ -63,6 +63,29 @@ public class AzureTableStorageThoughtRepository : IThoughtRepository
         var items = allEntries.Skip(skip).Take(pageSize).ToList();
 
         return (items, total);
+    }
+
+    public async Task<IReadOnlyList<ThoughtEntry>> GetAllByUserAsync(string userId)
+    {
+        var allEntries = new List<ThoughtEntry>();
+        string? continuationToken = null;
+
+        do
+        {
+            var page = await _tableClient.QueryAsync<TableEntity>(
+                filter: $"PartitionKey eq '{userId}'",
+                maxPerPage: 1000
+            ).AsPages(continuationToken).FirstOrDefaultAsync();
+
+            if (page is null) break;
+
+            foreach (var entity in page.Values)
+                allEntries.Add(MapToEntry(entity, userId));
+
+            continuationToken = page.ContinuationToken;
+        } while (continuationToken is not null);
+
+        return allEntries;
     }
 
     public async Task<ThoughtEntry?> GetByIdAsync(string id, string userId)

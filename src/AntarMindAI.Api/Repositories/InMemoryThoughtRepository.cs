@@ -1,4 +1,4 @@
-// Modified by AI on 05/04/2026. Edit #1.
+// Modified by AI on 05/04/2026. Edit #2.
 using System.Collections.Concurrent;
 using AntarMindAI.Api.Models;
 
@@ -36,6 +36,18 @@ public class InMemoryThoughtRepository : IThoughtRepository
             var items = sorted.Skip(skip).Take(pageSize).ToList();
 
             return Task.FromResult<(IReadOnlyList<ThoughtEntry>, int)>((items, total));
+        }
+    }
+
+    public Task<IReadOnlyList<ThoughtEntry>> GetAllByUserAsync(string userId)
+    {
+        lock (_lock)
+        {
+            if (!_store.TryGetValue(userId, out var list))
+                return Task.FromResult<IReadOnlyList<ThoughtEntry>>([]);
+
+            var sorted = list.OrderByDescending(e => e.CreatedAt).ToList();
+            return Task.FromResult<IReadOnlyList<ThoughtEntry>>(sorted);
         }
     }
 
